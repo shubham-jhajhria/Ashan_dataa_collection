@@ -27,13 +27,13 @@ fun CreateHeader() {
         Surface (modifier = Modifier
             .fillMaxWidth()
             .height(55.dp),
-            color = Color(0xFF673AB7)
+            color = Color(0xFFE1BEE7)
         ){
             Column(modifier = Modifier.padding(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Aashan Data Collection", style = TextStyle(color = Color(0xFFFFFFFF),fontSize =24.sp, fontWeight = FontWeight.Bold))
+                Text(text = "Aashan Data Collection", style = TextStyle(color = Color(0xFF000000),fontSize =24.sp, fontWeight = FontWeight.Bold))
 
 
             }

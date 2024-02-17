@@ -86,8 +86,9 @@ fun PoseDetectionScreen(poseLandmarker: PoseLandmarker, executor: Executor, pose
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MyAppContent(navController: NavController) {
-    CreateHeader()
+
     AshanName(navController)
+    CreateHeader()
 }
 
 @ExperimentalComposeUiApi

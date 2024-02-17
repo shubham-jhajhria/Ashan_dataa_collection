@@ -1,6 +1,7 @@
 package com.shubham.final_project
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -28,11 +30,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.shubham.final_project.components.InputField
 
 @ExperimentalComposeUiApi
@@ -52,16 +59,19 @@ fun inputEnd(
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
-        modifier = Modifier,
+        modifier = Modifier.background(Color(0xFFFF8A65)),
         verticalArrangement = Arrangement.Center, // Center vertically
         horizontalAlignment = Alignment.CenterHorizontally // Center horizontally
     ) {
-        Surface(
+        Box(
             modifier = Modifier
-                .width(350.dp),
-            shape = RoundedCornerShape(corner = CornerSize(8.dp)),
-            border = BorderStroke(2.dp, color = Color.DarkGray)
-        ) {
+                .padding(10.dp,60.dp,)
+                .width(350.dp)
+//                .height(400.dp)
+                .clip(RoundedCornerShape(5))
+                .background(Color(0xFFB2EBF2))
+
+        ){
             Column(modifier = modifier,
                 verticalArrangement = Arrangement.Center, // Center vertically
                 horizontalAlignment = Alignment.CenterHorizontally ) {
@@ -122,7 +132,7 @@ fun CreateCircle(navigateToCamera: () -> Unit) {
         border = BorderStroke(2.dp, Color.Black)
     ) {
         Card(
-            colors = CardDefaults.cardColors(Color(0xFF525B88)),
+            colors = CardDefaults.cardColors(Color(0xFFD1C4E9)),
             elevation = CardDefaults.cardElevation(10.dp)
         ) {
             Box(
@@ -131,7 +141,7 @@ fun CreateCircle(navigateToCamera: () -> Unit) {
                     .clickable { navigateToCamera() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Start", style = TextStyle(color = Color(0xFFFFFFFF)))
+                Text(text = "Next", style = TextStyle(color = Color(0xFF000000), fontWeight = FontWeight.Bold))
             }
         }
     }

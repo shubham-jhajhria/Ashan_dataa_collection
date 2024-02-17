@@ -7,9 +7,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -36,7 +38,7 @@ fun InputField(
         onValueChange = { valueState.value = it },
         label = { Text(text = labelId) },
         singleLine = isSingleLine,
-        textStyle = TextStyle(fontSize = 18.sp, color = MaterialTheme.colorScheme.onBackground),
+        textStyle = TextStyle(fontSize = 18.sp, color = Color.Black),
         modifier = modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp),
         leadingIcon = leadingIcon?.let {
             {
