@@ -84,4 +84,5 @@ dependencies {
     // CameraX View class
     implementation ("androidx.camera:camera-view:$cameraxVersion")
     implementation ("com.google.mediapipe:tasks-vision:latest.release")
+    implementation("com.github.doyaaaaaken:kotlin-csv:1.9.3")
 }
