@@ -95,7 +95,7 @@ fun PoseDetectionPreview(
 private fun DrawPosesOnPreview(resultBundleState: MutableState<PoseDetector.ResultBundle?>) {
     val resultBundle = resultBundleState.value
     Ani()
-    if (resultBundle != null) {
+    if (resultBundle != null && basicCountdownTimer()==0) {
         Canvas(modifier = Modifier.fillMaxSize()) {
             val scale = max(size.width * 1f / resultBundle.inputImageWidth, size.height * 1f / resultBundle.inputImageHeight)
             resultBundle.results.forEachIndexed { resultIndex, result ->
