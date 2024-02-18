@@ -73,13 +73,15 @@ fun Navigation(context: Context) {
         }
         composable("PoseScreen") {
             // This is the camera preview screen
+
             PoseDetectionScreen(poseLandmarker, executor,poseResult)
+
         }
     }
 }
 @Composable
 fun PoseDetectionScreen(poseLandmarker: PoseLandmarker, executor: Executor, poseResult: MutableState<PoseDetector.ResultBundle?>) {
-    
+
     PoseDetectionPreview(poseLandmarker, executor, poseResult)
 }
 

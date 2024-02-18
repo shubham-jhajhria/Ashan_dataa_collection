@@ -87,57 +87,32 @@ fun PoseDetectionPreview(
             )
         }
     )
+
     CreateHeader()
     DrawPosesOnPreview(resultBundleState)
 }
-
 @Composable
 private fun DrawPosesOnPreview(resultBundleState: MutableState<PoseDetector.ResultBundle?>) {
     val resultBundle = resultBundleState.value
-
+    Ani()
     if (resultBundle != null) {
-
-
-        // Create an Animatable to control the progress of drawing circles
-        val drawProgress = remember { Animatable(initialValue = 0f) }
-
-        // Launch a coroutine to increment the draw progress over time
-        LaunchedEffect(Unit) {
-            while (drawProgress.value < 1f) {
-                delay(100) // Adjust the delay duration as needed
-                drawProgress.animateTo(drawProgress.value + 0.1f) // Adjust the step size as needed
-            }
-        }
-
-        // Draw circles on the canvas based on the draw progress
         Canvas(modifier = Modifier.fillMaxSize()) {
             val scale = max(size.width * 1f / resultBundle.inputImageWidth, size.height * 1f / resultBundle.inputImageHeight)
             resultBundle.results.forEachIndexed { resultIndex, result ->
                 result.landmarks().forEachIndexed { landmarkIndex, poseLandmarks ->
-                    val progress = calculateCircleProgress(resultIndex, landmarkIndex)
-                    if (progress <= drawProgress.value) {
-                        poseLandmarks.forEach { landmark ->
-                            drawCircle(
-                                color = Color.Yellow,
-                                radius = 10F,
-                                center = Offset(landmark.x() * scale * resultBundle.inputImageWidth, landmark.y() * scale * resultBundle.inputImageHeight)
-                            )
-                        }
+                    poseLandmarks.forEach { landmark ->
+                        drawCircle(
+                            color = Color.Yellow,
+                            radius = 10F,
+                            center = Offset(landmark.x() * scale * resultBundle.inputImageWidth, landmark.y() * scale * resultBundle.inputImageHeight)
+                        )
                     }
                 }
             }
         }
+
     }
 }
-
-// Function to calculate the progress of drawing a circle
-private fun calculateCircleProgress(resultIndex: Int, landmarkIndex: Int): Float {
-    // Adjust this calculation based on your preference for drawing circles
-    return (resultIndex + 1) * 0.1f + landmarkIndex * 0.01f
-}
-
-
-
 
 private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
     val yBuffer = imageProxy.planes[0].buffer // Y plane
