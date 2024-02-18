@@ -19,6 +19,9 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,13 +33,33 @@ import androidx.compose.ui.unit.dp
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import java.io.File
 
-@Preview
+
 @Composable
-fun writeCsv(){
+fun writeCsv(resultBundle: PoseDetector.ResultBundle){
     val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-    val csv=File(folder,"test.csv")
+    val csv=File(folder,"${GlobalValues.asanName}.csv")
     csv.createNewFile()
     csvWriter().open(csv,append = true){
-        writeRow(listOf("a","b","c"))
+
+        writeRow(appendLandmarkCoordinates(resultBundle))
     }
+}
+
+fun appendLandmarkCoordinates(resultBundle: PoseDetector.ResultBundle): List<String> {
+    val coordinatesList: MutableList<String> = mutableListOf()
+
+    resultBundle.results.forEach { result ->
+        result.landmarks().forEach { poseLandmarks ->
+            poseLandmarks.forEach { landmark ->
+                coordinatesList.add("${landmark.x()},${landmark.y()}")
+            }
+        }
+    }
+    coordinatesList.add(GlobalValues.asanName)
+    return coordinatesList
+}
+
+object GlobalValues {
+    var asanName: String by mutableStateOf("")
+    var time: String by mutableStateOf("")
 }

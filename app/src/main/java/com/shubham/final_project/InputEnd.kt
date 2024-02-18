@@ -112,6 +112,9 @@ fun inputEnd(
                 if(validState && validtimeState){
                     Row(modifier = Modifier.padding( bottom = 10.dp), horizontalArrangement = Arrangement.Center){
                         CreateCircle( navigateToCamera = navigateToCamera)
+                        GlobalValues.asanName=asanNameState.value
+                        GlobalValues.time=timeState.value
+
                     }
                 }
                 else{

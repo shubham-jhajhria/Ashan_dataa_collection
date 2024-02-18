@@ -49,7 +49,7 @@ fun PoseDetectionPreview(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     AndroidView(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         factory = { context ->
             val view = PreviewView(context)
             view
@@ -89,14 +89,16 @@ fun PoseDetectionPreview(
     )
 
     CreateHeader()
-    DrawPosesOnPreview(resultBundleState)
+    DrawPosesOnPreview(modifier,resultBundleState)
 }
 @Composable
-private fun DrawPosesOnPreview(resultBundleState: MutableState<PoseDetector.ResultBundle?>) {
+private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableState<PoseDetector.ResultBundle?>) {
     val resultBundle = resultBundleState.value
     Ani()
-    if (resultBundle != null && basicCountdownTimer()==0) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
+    if (resultBundle != null && basicCountdownTimer(10)==0) {
+        if(basicCountdownTimer(time = GlobalValues.time.toInt())>0){
+        writeCsv(resultBundle)
+        Canvas(modifier = modifier) { 
             val scale = max(size.width * 1f / resultBundle.inputImageWidth, size.height * 1f / resultBundle.inputImageHeight)
             resultBundle.results.forEachIndexed { resultIndex, result ->
                 result.landmarks().forEachIndexed { landmarkIndex, poseLandmarks ->
@@ -109,7 +111,7 @@ private fun DrawPosesOnPreview(resultBundleState: MutableState<PoseDetector.Resu
                     }
                 }
             }
-        }
+        }}
 
     }
 }

@@ -47,7 +47,7 @@ fun Ani(){
                 .padding(10.dp,60.dp,10.dp,10.dp)
                 .align(Alignment.TopCenter), fontSize = 40.sp, fontWeight = FontWeight.Bold)
             Text(
-                text = "${basicCountdownTimer()}",
+                text = "${basicCountdownTimer(10)}",
                 modifier = Modifier
                     .graphicsLayer {
                         scaleX = scale
@@ -67,8 +67,8 @@ fun Ani(){
 }
 
 @Composable
-fun basicCountdownTimer(): Int {
-    var timeLeft by remember { mutableIntStateOf(10) }
+fun basicCountdownTimer(time:Int): Int {
+    var timeLeft by remember { mutableIntStateOf(time) }
 
     LaunchedEffect(key1 = timeLeft) {
         while (timeLeft > 0) {
