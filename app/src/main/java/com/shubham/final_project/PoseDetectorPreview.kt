@@ -24,6 +24,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PointMode
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -97,7 +99,8 @@ private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableStat
     Ani()
     if (resultBundle != null && basicCountdownTimer(10)==0) {
         if(basicCountdownTimer(time = GlobalValues.time.toInt())>0){
-        writeCsv(resultBundle)
+            writeCsv(resultBundle)
+            val points = mutableListOf<Offset>()
         Canvas(modifier = modifier) { 
             val scale = max(size.width * 1f / resultBundle.inputImageWidth, size.height * 1f / resultBundle.inputImageHeight)
             resultBundle.results.forEachIndexed { resultIndex, result ->
@@ -106,8 +109,9 @@ private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableStat
                         drawCircle(
                             color = Color.Yellow,
                             radius = 10F,
-                            center = Offset(landmark.x() * scale * resultBundle.inputImageWidth, landmark.y() * scale * resultBundle.inputImageHeight)
+                            center = Offset(landmark.x() * scale*resultBundle.inputImageWidth-300f, landmark.y() * scale*resultBundle.inputImageHeight)
                         )
+
                     }
                 }
             }
