@@ -7,25 +7,21 @@ import android.graphics.ImageFormat
 import android.graphics.Matrix
 import android.graphics.Rect
 import android.graphics.YuvImage
+import android.os.Build
 import android.os.SystemClock
+import androidx.annotation.RequiresApi
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.PointMode
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -33,11 +29,11 @@ import androidx.core.content.ContextCompat
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
-import kotlinx.coroutines.delay
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executor
 import kotlin.math.max
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun PoseDetectionPreview(
@@ -93,6 +89,7 @@ fun PoseDetectionPreview(
     CreateHeader()
     DrawPosesOnPreview(modifier,resultBundleState)
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableState<PoseDetector.ResultBundle?>) {
     val resultBundle = resultBundleState.value
@@ -100,7 +97,7 @@ private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableStat
     if (resultBundle != null && basicCountdownTimer(10)==0) {
         if(basicCountdownTimer(time = GlobalValues.time.toInt())>0){
             writeCsv(resultBundle)
-            val points = mutableListOf<Offset>()
+
         Canvas(modifier = modifier) { 
             val scale = max(size.width * 1f / resultBundle.inputImageWidth, size.height * 1f / resultBundle.inputImageHeight)
             resultBundle.results.forEachIndexed { resultIndex, result ->
