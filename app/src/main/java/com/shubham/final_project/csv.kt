@@ -49,18 +49,10 @@ fun getColumnHeadings(): List<String> {
 @RequiresApi(Build.VERSION_CODES.O)
 fun appendLandmarkCoordinates(resultBundle: PoseDetector.ResultBundle): List<String> {
     val coordinatesList: MutableList<String> = mutableListOf()
-    val calendar = Calendar.getInstance()
 
-    val current = LocalDateTime.of(
-        calendar.get(Calendar.YEAR),
-        calendar.get(Calendar.MONTH),
-        calendar.get(Calendar.DAY_OF_MONTH),
-        calendar.get(Calendar.HOUR_OF_DAY),
-        calendar.get(Calendar.MINUTE),
-        calendar.get(Calendar.SECOND)
-    )
-    coordinatesList.add(current.toString())
+
     resultBundle.results.forEach { result ->
+        coordinatesList.add(result.timestampMs().toString())
         result.landmarks().forEach { poseLandmarks ->
             poseLandmarks.forEach { landmark ->
                 coordinatesList.add("${landmark.x()}")
@@ -70,8 +62,7 @@ fun appendLandmarkCoordinates(resultBundle: PoseDetector.ResultBundle): List<Str
                 val visibility = landmark.visibility().toString().removePrefix("Optional[").removeSuffix("]")
                 coordinatesList.add(presence)
                 coordinatesList.add(visibility)
-//                coordinatesList.add("${landmark.presence()}")
-//                coordinatesList.add("${landmark.visibility()}")
+
             }
         }
     }
