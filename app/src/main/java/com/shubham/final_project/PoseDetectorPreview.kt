@@ -58,7 +58,7 @@ fun PoseDetectionPreview(
                 .build()
                 .also {
                     it.setAnalyzer(executor) { image ->
-                        val mpImage = imageProxyToMPImage(image)
+                        val mpImage = imageProxyToMPImage(image,isFrontCamera = true)
                         val frameTime = SystemClock.uptimeMillis()
                         poseLandmarker.detectAsync(mpImage, frameTime)
                         image.close()
@@ -68,7 +68,7 @@ fun PoseDetectionPreview(
             val cameraProvider = ProcessCameraProvider.getInstance(context)
             cameraProvider.addListener(
                 {
-                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+                    val cameraSelector = CameraSelector.DEFAULT_FRONT_CAMERA
                     val cameraProvider = cameraProvider.get()
                     cameraProvider.unbindAll()
                     cameraProvider.bindToLifecycle(
@@ -117,7 +117,7 @@ private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableStat
     }
 }
 
-private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
+private fun imageProxyToBitmap(imageProxy: ImageProxy,isFrontCamera: Boolean): Bitmap {
     val yBuffer = imageProxy.planes[0].buffer // Y plane
     val uBuffer = imageProxy.planes[1].buffer // U plane
     val vBuffer = imageProxy.planes[2].buffer // V plane
@@ -151,12 +151,20 @@ private fun imageProxyToBitmap(imageProxy: ImageProxy): Bitmap {
     // Rotate the bitmap based on rotationDegrees
     val matrix = Matrix().apply {
         postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
+        if (isFrontCamera) {
+            postScale(
+                -1f,
+                1f,
+                imageProxy.width.toFloat(),
+                imageProxy.height.toFloat()
+            )
+        }
     }
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }
 
 // Function to convert ImageProxy to MPImage
-private fun imageProxyToMPImage(imageProxy: ImageProxy): MPImage {
-    val bitmap = imageProxyToBitmap(imageProxy)
+private fun imageProxyToMPImage(imageProxy: ImageProxy,isFrontCamera: Boolean): MPImage {
+    val bitmap = imageProxyToBitmap(imageProxy,isFrontCamera)
     return BitmapImageBuilder(bitmap).build()
 }
