@@ -1,18 +1,32 @@
 package com.shubham.final_project
 
 import android.content.Context
+import android.content.pm.ActivityInfo
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -27,6 +41,7 @@ import java.util.concurrent.Executors
 
 class MainActivity : ComponentActivity() {
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -58,6 +73,7 @@ fun MyApp(content: @Composable ()-> Unit) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Navigation(context: Context) {
     val navController = rememberNavController()
@@ -74,16 +90,57 @@ fun Navigation(context: Context) {
         composable("PoseScreen") {
             // This is the camera preview screen
 
-            PoseDetectionScreen(poseLandmarker, executor,poseResult)
+            PoseDetectionScreen(context,poseLandmarker, executor,poseResult)
 
         }
     }
 }
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PoseDetectionScreen(poseLandmarker: PoseLandmarker, executor: Executor, poseResult: MutableState<PoseDetector.ResultBundle?>) {
+fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executor: Executor, poseResult: MutableState<PoseDetector.ResultBundle?>) {
+    LaunchedEffect(Unit) {
+        (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-    PoseDetectionPreview(poseLandmarker, executor, poseResult)
-}
+    }
+
+    DisposableEffect(context) {
+        onDispose {
+            (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
+        Column(
+            Modifier
+        ) {
+
+            Row(
+                Modifier
+                    .fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth(0.5f)
+                        .background(Color.Black),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PoseDetectionPreview(poseLandmarker, executor, poseResult)
+                }
+                Box(
+                    Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .background(Color.Black),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = "Video")
+
+                }
+            }
+        }
+    }
+
+
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -105,6 +162,7 @@ fun AshanName(navController: NavController) {
 }
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalComposeUiApi
 @Preview(showBackground = true)
 @Composable

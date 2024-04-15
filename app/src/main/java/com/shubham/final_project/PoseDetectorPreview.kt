@@ -48,8 +48,9 @@ fun PoseDetectionPreview(
 
     AndroidView(
         modifier = modifier,
-        factory = { context ->
-            val view = PreviewView(context)
+        factory = {
+            val view = PreviewView(it)
+            view.scaleType=PreviewView.ScaleType.FILL_END
             view
 
         },
@@ -86,7 +87,7 @@ fun PoseDetectionPreview(
         }
     )
 
-    CreateHeader()
+//    CreateHeader()
     DrawPosesOnPreview(modifier,resultBundleState)
 }
 @RequiresApi(Build.VERSION_CODES.O)

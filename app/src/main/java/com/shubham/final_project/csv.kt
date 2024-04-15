@@ -53,7 +53,7 @@ fun appendLandmarkCoordinates(resultBundle: PoseDetector.ResultBundle): List<Str
 
     resultBundle.results.forEach { result ->
         coordinatesList.add(result.timestampMs().toString())
-        result.landmarks().forEach { poseLandmarks ->
+        result.worldLandmarks().forEach { poseLandmarks ->
             poseLandmarks.forEach { landmark ->
                 coordinatesList.add("${landmark.x()}")
                 coordinatesList.add("${landmark.y()}")
