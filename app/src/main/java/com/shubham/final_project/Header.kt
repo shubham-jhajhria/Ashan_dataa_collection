@@ -34,8 +34,6 @@ fun CreateHeader() {
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(text = "Aashan Data Collection", style = TextStyle(color = Color(0xFF000000),fontSize =24.sp, fontWeight = FontWeight.Bold))
-
-
             }
 
         }

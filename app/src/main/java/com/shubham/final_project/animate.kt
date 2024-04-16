@@ -6,10 +6,6 @@ import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-//import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
-//import androidx.compose.foundation.layout.FlowColumnScopeInstance.align
-
-//import androidx.compose.foundation.layout.FlowRowScopeInstance.align
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.LocalTextStyle
@@ -27,7 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 
-@Preview
+
 @Composable
 fun Ani(){
     var animationActive by remember { mutableStateOf(true) }
@@ -43,9 +39,13 @@ fun Ani(){
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.Transparent)) {
-            Text(text = "Starts In", modifier = Modifier
+            Text(text = "Starts In",
+                modifier = Modifier
                 .padding(10.dp,60.dp,10.dp,10.dp)
-                .align(Alignment.TopCenter), fontSize = 40.sp, fontWeight = FontWeight.Bold)
+                .align(Alignment.TopCenter),
+                fontSize = 40.sp,
+                fontWeight = FontWeight.Bold
+            )
             Text(
                 text = "${basicCountdownTimer(10)}",
                 modifier = Modifier
@@ -78,3 +78,5 @@ fun basicCountdownTimer(time:Int): Int {
     }
     return timeLeft
 }
+
+
