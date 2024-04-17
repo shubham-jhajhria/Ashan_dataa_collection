@@ -40,8 +40,6 @@ fun getColumnHeadings(): List<String> {
         headings.add("Landmark_${i + 1}_Presence")
         headings.add("Landmark_${i + 1}_Visibility")
     }
-    // Add additional column headings
-
     headings.add("Asan_Name")
     return headings
 }
@@ -49,8 +47,6 @@ fun getColumnHeadings(): List<String> {
 @RequiresApi(Build.VERSION_CODES.O)
 fun appendLandmarkCoordinates(resultBundle: PoseDetector.ResultBundle): List<String> {
     val coordinatesList: MutableList<String> = mutableListOf()
-
-
     resultBundle.results.forEach { result ->
         coordinatesList.add(result.timestampMs().toString())
         result.worldLandmarks().forEach { poseLandmarks ->
@@ -62,11 +58,9 @@ fun appendLandmarkCoordinates(resultBundle: PoseDetector.ResultBundle): List<Str
                 val visibility = landmark.visibility().toString().removePrefix("Optional[").removeSuffix("]")
                 coordinatesList.add(presence)
                 coordinatesList.add(visibility)
-
             }
         }
     }
-
     coordinatesList.add(GlobalValues.asanName)
     return coordinatesList
 }

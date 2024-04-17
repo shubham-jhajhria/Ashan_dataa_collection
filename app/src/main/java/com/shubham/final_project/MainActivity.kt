@@ -103,35 +103,35 @@ fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executo
         }
     }
 
-        Column(
-            Modifier
-        ) {
+    Column(
+        Modifier
+    ) {
 
-            Row(
-                Modifier
-                    .fillMaxSize()
+        Row(
+            Modifier
+                .fillMaxSize()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .background(Color.Transparent),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(0.5f)
-                        .background(Color.Black),
-                    contentAlignment = Alignment.Center
-                ) {
-                    PoseDetectionPreview(poseLandmarker, executor, poseResult)
-                }
-                Box(
-                    Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth()
-                        .background(Color.Black),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = "Video")
-                }
+                PoseDetectionPreview(poseLandmarker, executor, poseResult)
             }
+//            Box(
+//                Modifier
+//                    .fillMaxHeight()
+//                    .fillMaxWidth()
+//                    .background(Color.Black),
+//                contentAlignment = Alignment.Center,
+//            ) {
+//                Text(text = "Video")
+//            }
         }
     }
+}
 
 
 
