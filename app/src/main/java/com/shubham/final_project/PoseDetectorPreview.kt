@@ -17,24 +17,15 @@ import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
@@ -65,10 +56,12 @@ fun PoseDetectionPreview(
         },
         update = { previewView ->
             val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                .setOutputImageFormat(ImageAnalysis.OUTPUT_IMAGE_FORMAT_RGBA_8888)
                 .build()
                 .also {
                     it.setAnalyzer(executor) { image ->
-                        val mpImage = imageProxyToMPImage(image,isFrontCamera = true)
+                        val mpImage = mpimage(image,isFrontCamera = true)
                         val frameTime = SystemClock.uptimeMillis()
                         poseLandmarker.detectAsync(mpImage, frameTime)
                         image.close()
@@ -88,6 +81,7 @@ fun PoseDetectionPreview(
                     )
                     val preview = Preview.Builder().build()
                     preview.setSurfaceProvider(previewView.surfaceProvider)
+
                     cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
                 },
                 ContextCompat.getMainExecutor(context)
@@ -95,6 +89,7 @@ fun PoseDetectionPreview(
         }
     )
 
+//    CreateHeader()
     DrawPosesOnPreview(modifier,resultBundleState)
 }
 @RequiresApi(Build.VERSION_CODES.O)
@@ -115,49 +110,33 @@ private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableStat
                             color = Color.Yellow,
                             radius = 10F,
                             center = Offset(landmark.x() * scale*resultBundle.inputImageWidth-300f, landmark.y() * scale*resultBundle.inputImageHeight)
-                            )
-                        }
+                        )
+
                     }
                 }
             }
-        }
-    }
+        }}
 
+    }
 }
 
-private fun imageProxyToBitmap(imageProxy: ImageProxy,isFrontCamera: Boolean): Bitmap {
-    val yBuffer = imageProxy.planes[0].buffer // Y plane
-    val uBuffer = imageProxy.planes[1].buffer // U plane
-    val vBuffer = imageProxy.planes[2].buffer // V plane
+private fun mpimage(
+    imageProxy: ImageProxy,
+    isFrontCamera: Boolean,
+): MPImage? {
+    // Copy out RGB bits from the frame to a bitmap buffer
+    val bitmapBuffer =
+        Bitmap.createBitmap(
+            imageProxy.width,
+            imageProxy.height,
+            Bitmap.Config.ARGB_8888
+        )
 
-    val ySize = yBuffer.remaining()
-    val uSize = uBuffer.remaining()
-    val vSize = vBuffer.remaining()
+    imageProxy.use { bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer) }
+    imageProxy.close()
 
-    val nv21 = ByteArray(ySize + uSize + vSize)
-
-    // Copy Y, U, and V buffers into nv21 array
-    yBuffer.get(nv21, 0, ySize)
-    vBuffer.get(nv21, ySize, vSize)
-    uBuffer.get(nv21, ySize + vSize, uSize)
-
-    // Create a YuvImage from the nv21 array
-    val yuvImage = YuvImage(nv21, ImageFormat.NV21, imageProxy.width, imageProxy.height, null)
-
-    // Create a ByteArrayOutputStream to store the JPEG data
-    val outputStream = ByteArrayOutputStream()
-
-    // Compress the YuvImage into JPEG format
-    yuvImage.compressToJpeg(Rect(0, 0, yuvImage.width, yuvImage.height), 100, outputStream)
-
-    // Create a Bitmap from the JPEG data
-    val jpegByteArray = outputStream.toByteArray()
-
-    // Convert JPEG bytes to Bitmap
-    val bitmap = BitmapFactory.decodeByteArray(jpegByteArray, 0, jpegByteArray.size)
-
-    // Rotate the bitmap based on rotationDegrees
     val matrix = Matrix().apply {
+        // Rotate the frame received from the camera to be in the same direction as it'll be shown
         postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
         if (isFrontCamera) {
             postScale(
@@ -168,11 +147,12 @@ private fun imageProxyToBitmap(imageProxy: ImageProxy,isFrontCamera: Boolean): B
             )
         }
     }
-    return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-}
+    val rotatedBitmap = Bitmap.createBitmap(
+        bitmapBuffer, 0, 0, bitmapBuffer.width, bitmapBuffer.height,
+        matrix, true
+    )
 
-// Function to convert ImageProxy to MPImage
-private fun imageProxyToMPImage(imageProxy: ImageProxy,isFrontCamera: Boolean): MPImage {
-    val bitmap = imageProxyToBitmap(imageProxy,isFrontCamera)
-    return BitmapImageBuilder(bitmap).build()
+    // Convert the input Bitmap object to an MPImage object to run inference
+    val mpImage = BitmapImageBuilder(rotatedBitmap).build()
+    return  mpImage
 }

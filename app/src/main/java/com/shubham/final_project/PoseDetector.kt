@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
+import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarkerResult
@@ -17,7 +18,9 @@ class PoseDetector(private val context: Context) {
 
     fun initializePoseLandmarker(): PoseLandmarker {
         val modelName = "pose_landmarker_lite.task"
-        val baseOptionsBuilder = BaseOptions.builder().setModelAssetPath(modelName)
+        val baseOptionsBuilder = BaseOptions.builder()
+            .setModelAssetPath(modelName)
+        baseOptionsBuilder.setDelegate(Delegate.CPU)
         val optionsBuilder =
             PoseLandmarker.PoseLandmarkerOptions.builder()
                 .setBaseOptions(baseOptionsBuilder.build())

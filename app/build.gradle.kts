@@ -78,7 +78,7 @@ dependencies {
     implementation( "androidx.camera:camera-lifecycle:$cameraxVersion")
     implementation ("androidx.camera:camera-view:$cameraxVersion")
     implementation("com.airbnb.android:lottie-compose:6.2.0")
-
+    implementation("com.airbnb.android:lottie-compose:6.2.0")
     implementation ("com.google.mediapipe:tasks-vision:latest.release")
     implementation("com.github.doyaaaaaken:kotlin-csv:1.9.3")
 }
