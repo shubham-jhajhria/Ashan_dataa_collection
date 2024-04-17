@@ -26,7 +26,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
@@ -42,21 +41,18 @@ import java.util.concurrent.Executors
 class MainActivity : ComponentActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContent {
-            MyApp {
-                val context = LocalContext.current
-                Navigation(context)
-
+    override fun onCreate(savedInstanceState: Bundle?){
+            super.onCreate(savedInstanceState)
+            setContent {
+                MyApp {
+                    val context = LocalContext.current
+                    Navigation(context)
+                }
             }
-        }
-
         }
     override fun onDestroy() {
             super.onDestroy()
-            // Release resources
-            finish()
+            finish()           // Release resources
     }
 }
 @Composable
@@ -69,7 +65,6 @@ fun MyApp(content: @Composable ()-> Unit) {
             content()
         }
     }
-
 }
 
 
@@ -89,7 +84,6 @@ fun Navigation(context: Context) {
         }
         composable("PoseScreen") {
             // This is the camera preview screen
-
             PoseDetectionScreen(context,poseLandmarker, executor,poseResult)
 
         }
@@ -134,7 +128,6 @@ fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executo
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(text = "Video")
-
                 }
             }
         }
@@ -145,15 +138,14 @@ fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executo
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun MyAppContent(navController: NavController) {
-
-    AshanName(navController)
+    AasanName(navController)
     CreateHeader()
 }
 
 @ExperimentalComposeUiApi
 @Composable
-fun AshanName(navController: NavController) {
-    inputEnd(
+fun AasanName(navController: NavController) {
+    InputEnd(
         navigateToCamera = { navController.navigate("PoseScreen") }
     ) { asnName, timeData ->
         Log.d("Name", "Aasan Name: $asnName")
@@ -171,7 +163,6 @@ fun DefaultPreview() {
         MyApp{
             val context = LocalContext.current
             Navigation(context)
-
         }
     }
 }

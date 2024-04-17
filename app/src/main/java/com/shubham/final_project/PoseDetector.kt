@@ -18,7 +18,6 @@ class PoseDetector(private val context: Context) {
     fun initializePoseLandmarker(): PoseLandmarker {
         val modelName = "pose_landmarker_lite.task"
         val baseOptionsBuilder = BaseOptions.builder().setModelAssetPath(modelName)
-
         val optionsBuilder =
             PoseLandmarker.PoseLandmarkerOptions.builder()
                 .setBaseOptions(baseOptionsBuilder.build())

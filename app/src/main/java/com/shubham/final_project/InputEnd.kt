@@ -39,7 +39,7 @@ import com.shubham.final_project.components.InputField
 
 @ExperimentalComposeUiApi
 @Composable
-fun inputEnd(
+fun InputEnd(
     modifier: Modifier = Modifier,
     navigateToCamera: () -> Unit,
     onValChange: (String, String) -> Unit = { _, _ -> }
@@ -49,12 +49,12 @@ fun inputEnd(
         asanNameState.value.trim().isNotEmpty()
     }
     val timeState = remember { mutableStateOf("") }
-    val validtimeState = remember(timeState.value) {
+    val ValidTimeState = remember(timeState.value) {
         timeState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     Column(
-        modifier = Modifier.background(Color(0xFFFF8A65)),
+        modifier = Modifier.background(Color(0xFF0A8ED9)),
         verticalArrangement = Arrangement.Center, // Center vertically
         horizontalAlignment = Alignment.CenterHorizontally // Center horizontally
     ) {
@@ -64,7 +64,7 @@ fun inputEnd(
                 .width(350.dp)
 //                .height(400.dp)
                 .clip(RoundedCornerShape(5))
-                .background(Color(0xFFB2EBF2))
+                .background(Color(0xFFFFFFFF))
 
         ){
             Column(modifier = modifier,
@@ -96,17 +96,17 @@ fun inputEnd(
                         enabled = true,
                         isSingleLine = true,
                         keyboardType = KeyboardType.Number,
+
                         onAction = KeyboardActions {
-                            if (!validtimeState) return@KeyboardActions
+                            if (!ValidTimeState) return@KeyboardActions
                             onValChange(asanNameState.value.trim(), timeState.value.trim()) // Logging both values
                             keyboardController?.hide()
                         }
-
                     )
                 }
-                if(validState && validtimeState){
+                if(validState && ValidTimeState){
                     Row(modifier = Modifier.padding( bottom = 10.dp), horizontalArrangement = Arrangement.Center){
-                        CreateCircle( navigateToCamera = navigateToCamera)
+                        NextButton( navigateToCamera = navigateToCamera)
                         GlobalValues.asanName=asanNameState.value
                         GlobalValues.time=timeState.value
 
@@ -123,14 +123,14 @@ fun inputEnd(
 }
 
 @Composable
-fun CreateCircle(navigateToCamera: () -> Unit) {
+fun NextButton(navigateToCamera: () -> Unit) {
     Surface(
         modifier = Modifier.size(150.dp, 50.dp),
         shape = CircleShape,
-        border = BorderStroke(2.dp, Color.Black)
+        border = BorderStroke(2.dp, Color(0xFF0A8ED9))
     ) {
         Card(
-            colors = CardDefaults.cardColors(Color(0xFFD1C4E9)),
+            colors = CardDefaults.cardColors(Color(0xFFD6FFD8)),
             elevation = CardDefaults.cardElevation(10.dp)
         ) {
             Box(
@@ -139,7 +139,7 @@ fun CreateCircle(navigateToCamera: () -> Unit) {
                     .clickable { navigateToCamera() },
                 contentAlignment = Alignment.Center
             ) {
-                Text(text = "Next", style = TextStyle(color = Color(0xFF000000), fontWeight = FontWeight.Bold))
+                Text(text = "Next", style = TextStyle(color = Color(0xFF0A8ED9), fontWeight = FontWeight.Bold))
             }
         }
     }
