@@ -1,5 +1,6 @@
 package com.shubham.final_project
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Build
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,18 +24,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.shubham.final_project.ui.theme.Final_projectTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
@@ -52,7 +62,7 @@ class MainActivity : ComponentActivity() {
         }
     override fun onDestroy() {
             super.onDestroy()
-            finish()           // Release resources
+            finish()
     }
 }
 @Composable
@@ -84,14 +94,15 @@ fun Navigation(context: Context) {
         }
         composable("PoseScreen") {
             // This is the camera preview screen
-            PoseDetectionScreen(context,poseLandmarker, executor,poseResult)
+            PoseDetectionScreen(navController,context,poseLandmarker, executor,poseResult)
 
         }
     }
 }
+@SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executor: Executor, poseResult: MutableState<PoseDetector.ResultBundle?>) {
+fun PoseDetectionScreen(navController: NavController,context: Context,poseLandmarker: PoseLandmarker, executor: Executor, poseResult: MutableState<PoseDetector.ResultBundle?>) {
     LaunchedEffect(Unit) {
         (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
@@ -102,24 +113,44 @@ fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executo
             (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
-
-    Column(
-        Modifier
-    ) {
-
-        Row(
-            Modifier
-                .fillMaxSize()
-        ) {
-            Box(
+    val success by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
+    val coroutineScope = rememberCoroutineScope()
+    if(basicCountdownTimer(time = GlobalValues.time.toInt())==0 && basicCountdownTimer(10)==0) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            LottieAnimation(
+                composition = success,
+                iterations = 1,
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .background(Color.Transparent),
-                contentAlignment = Alignment.Center
-            ) {
-                PoseDetectionPreview(poseLandmarker, executor, poseResult)
+                    .size(150.dp)
+                    .align(Alignment.Center)
+            )
+        }
+        coroutineScope.launch {
+            delay(2000)
+            navController.navigate("mainScreen") {
+                popUpTo("mainScreen")
             }
+        }
+    }
+    else{
+        Column(
+            Modifier
+        ) {
+
+            Row(
+                Modifier
+                    .fillMaxSize()
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .fillMaxWidth()
+                        .background(Color.Transparent),
+                    contentAlignment = Alignment.Center
+                ) {
+                    PoseDetectionPreview(poseLandmarker, executor, poseResult)
+
+                }
 //            Box(
 //                Modifier
 //                    .fillMaxHeight()
@@ -129,6 +160,7 @@ fun PoseDetectionScreen(context: Context,poseLandmarker: PoseLandmarker, executo
 //            ) {
 //                Text(text = "Video")
 //            }
+            }
         }
     }
 }

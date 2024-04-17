@@ -123,18 +123,6 @@ private fun DrawPosesOnPreview(modifier: Modifier,resultBundleState: MutableStat
         }
     }
 
-    val success by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
-    if(basicCountdownTimer(time = GlobalValues.time.toInt())==0 && basicCountdownTimer(10)==0) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            LottieAnimation(
-                composition = success,
-                iterations = 1,
-                modifier = Modifier
-                    .size(150.dp)
-                    .align(Alignment.Center)
-            )
-        }
-    }
 }
 
 private fun imageProxyToBitmap(imageProxy: ImageProxy,isFrontCamera: Boolean): Bitmap {
