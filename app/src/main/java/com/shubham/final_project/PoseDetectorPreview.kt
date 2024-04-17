@@ -1,50 +1,26 @@
 package com.shubham.final_project
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageFormat
-import android.graphics.Matrix
-import android.graphics.Rect
-import android.graphics.YuvImage
+
 import android.os.Build
-import android.os.SystemClock
 import androidx.annotation.RequiresApi
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageProxy
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.mediapipe.framework.image.BitmapImageBuilder
-import com.google.mediapipe.framework.image.MPImage
-import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.shubham.final_project.components.Ann
 import com.shubham.final_project.components.basicCountdownTimer
-import java.io.ByteArrayOutputStream
-import java.util.concurrent.Executor
 import kotlin.math.max
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PoseDetectionPreview(
-    context: Context,
     lifecycleOwner: LifecycleOwner,
     poseDetectionViewModel: PoseDetectionViewmodel = viewModel(),
-//    viewModel: PoseDetectionViewmodel= androidx.lifecycle.viewmodel.compose.viewModel(),
     modifier: Modifier
 ){
 

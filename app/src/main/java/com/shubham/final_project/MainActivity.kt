@@ -22,7 +22,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -33,7 +32,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,7 +39,6 @@ import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
-import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.shubham.final_project.components.CreateHeader
 import com.shubham.final_project.components.basicCountdownTimer
 import com.shubham.final_project.ui.theme.Final_projectTheme
@@ -87,7 +84,7 @@ fun Navigation(context: Context) {
     val navController = rememberNavController()
     val poseDetector = PoseDetector(context = context)
     val context = LocalContext.current
-    val poseLandmarker = poseDetector.initializePoseLandmarker()
+//    val poseLandmarker = poseDetector.initializePoseLandmarker()
     lateinit var executor: Executor
     val poseResult = poseDetector.getPoseResult()
     executor = Executors.newSingleThreadExecutor()
@@ -118,8 +115,6 @@ fun PoseDetectionScreen(navController: NavController, context: Context) {
     }
     val success by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
     val coroutineScope = rememberCoroutineScope()
-
-    val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     if(basicCountdownTimer(time = GlobalValues.time.toInt())==0 && basicCountdownTimer(10)==0) {
@@ -155,7 +150,7 @@ fun PoseDetectionScreen(navController: NavController, context: Context) {
                         .background(Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
-                    PoseDetectionPreview(context = context, lifecycleOwner = lifecycleOwner, modifier = Modifier )
+                    PoseDetectionPreview( lifecycleOwner = lifecycleOwner, modifier = Modifier )
 
                 }
 //            Box(
