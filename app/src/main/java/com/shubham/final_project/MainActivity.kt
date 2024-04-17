@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -31,8 +30,10 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -41,6 +42,8 @@ import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
+import com.shubham.final_project.components.CreateHeader
+import com.shubham.final_project.components.basicCountdownTimer
 import com.shubham.final_project.ui.theme.Final_projectTheme
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -83,6 +86,7 @@ fun MyApp(content: @Composable ()-> Unit) {
 fun Navigation(context: Context) {
     val navController = rememberNavController()
     val poseDetector = PoseDetector(context = context)
+    val context = LocalContext.current
     val poseLandmarker = poseDetector.initializePoseLandmarker()
     lateinit var executor: Executor
     val poseResult = poseDetector.getPoseResult()
@@ -94,7 +98,7 @@ fun Navigation(context: Context) {
         }
         composable("PoseScreen") {
             // This is the camera preview screen
-            PoseDetectionScreen(navController,context,poseLandmarker, executor,poseResult)
+            PoseDetectionScreen(navController= navController,context=context)
 
         }
     }
@@ -102,12 +106,11 @@ fun Navigation(context: Context) {
 @SuppressLint("CoroutineCreationDuringComposition")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PoseDetectionScreen(navController: NavController,context: Context,poseLandmarker: PoseLandmarker, executor: Executor, poseResult: MutableState<PoseDetector.ResultBundle?>) {
+fun PoseDetectionScreen(navController: NavController, context: Context) {
     LaunchedEffect(Unit) {
         (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
     }
-
     DisposableEffect(context) {
         onDispose {
             (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -115,6 +118,10 @@ fun PoseDetectionScreen(navController: NavController,context: Context,poseLandma
     }
     val success by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
     val coroutineScope = rememberCoroutineScope()
+
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+
     if(basicCountdownTimer(time = GlobalValues.time.toInt())==0 && basicCountdownTimer(10)==0) {
         Box(modifier = Modifier.fillMaxSize()) {
             LottieAnimation(
@@ -148,7 +155,7 @@ fun PoseDetectionScreen(navController: NavController,context: Context,poseLandma
                         .background(Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
-                    PoseDetectionPreview(poseLandmarker, executor, poseResult)
+                    PoseDetectionPreview(context = context, lifecycleOwner = lifecycleOwner, modifier = Modifier )
 
                 }
 //            Box(
@@ -198,6 +205,7 @@ fun DefaultPreview() {
         }
     }
 }
+
 
 
 

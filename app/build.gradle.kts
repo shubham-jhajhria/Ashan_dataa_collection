@@ -77,8 +77,25 @@ dependencies {
     implementation ("androidx.camera:camera-camera2:$cameraxVersion")
     implementation( "androidx.camera:camera-lifecycle:$cameraxVersion")
     implementation ("androidx.camera:camera-view:$cameraxVersion")
+    // CameraX View class
+    implementation ("androidx.camera:camera-view:$cameraxVersion")
+    implementation ("com.google.mediapipe:tasks-vision:latest.release")
+    implementation ("org.tensorflow:tensorflow-lite:2.15.0")
+    implementation ("org.tensorflow:tensorflow-lite-gpu:2.15.0")
+    implementation("org.tensorflow:tensorflow-lite-select-tf-ops:2.15.0")
+    // Lottie Animation
     implementation("com.airbnb.android:lottie-compose:6.2.0")
-    implementation("com.airbnb.android:lottie-compose:6.2.0")
+    // Mediapipe
     implementation ("com.google.mediapipe:tasks-vision:latest.release")
     implementation("com.github.doyaaaaaken:kotlin-csv:1.9.3")
+
+    val lifecycleversion ="2.7.0"
+
+    implementation( "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleversion")
+
+    implementation ("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleversion")
+
+    implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleversion")
+
+
 }
