@@ -1,5 +1,6 @@
 package com.shubham.final_project
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
@@ -17,21 +18,28 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -39,9 +47,14 @@ import androidx.navigation.compose.rememberNavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieComposition
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.mediapipe.tasks.vision.poselandmarker.PoseLandmarker
 import com.shubham.final_project.components.CreateHeader
 import com.shubham.final_project.components.basicCountdownTimer
 import com.shubham.final_project.ui.theme.Final_projectTheme
+import com.shubham.final_project.ui.theme.UiColors
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.concurrent.Executor
@@ -55,8 +68,8 @@ class MainActivity : ComponentActivity() {
             super.onCreate(savedInstanceState)
             setContent {
                 MyApp {
-                    val context = LocalContext.current
-                    Navigation(context)
+
+                    Navigation()
                 }
             }
         }
@@ -78,44 +91,93 @@ fun MyApp(content: @Composable ()-> Unit) {
 }
 
 
+@OptIn(ExperimentalPermissionsApi::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Navigation(context: Context) {
+fun Navigation() {
     val navController = rememberNavController()
-    val poseDetector = PoseDetector(context = context)
+
     val context = LocalContext.current
-//    val poseLandmarker = poseDetector.initializePoseLandmarker()
-    lateinit var executor: Executor
-    val poseResult = poseDetector.getPoseResult()
-    executor = Executors.newSingleThreadExecutor()
+    val poseDetectionViewModel: PoseDetectionViewmodel = viewModel()
+
+    val poseDetector = remember(poseDetectionViewModel.poseDetector.value) {
+        mutableStateOf(poseDetectionViewModel.poseDetector.value)
+    }
+    var poseLandmarker = poseDetector.value?.initializePoseLandmarker()
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val cameraInitialized =
+        poseDetectionViewModel.cameraInitialized().collectAsStateWithLifecycle().value
     NavHost(navController = navController, startDestination = "mainScreen") {
         composable("mainScreen") {
             // This is the main screen
             MyAppContent(navController)
         }
         composable("PoseScreen") {
+            LaunchedEffect(Unit) {
+                (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+            }
+            DisposableEffect(context) {
+                onDispose {
+                    (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+                }
+            }
+            val permissionState = if (
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                rememberPermissionState(
+                    Manifest.permission.CAMERA,
+                )
+            } else {
+                rememberPermissionState(
+                    Manifest.permission.CAMERA
+                )
+            }
+            LaunchedEffect(Unit) {
+                permissionState.launchPermissionRequest()
+            }
+            LaunchedEffect(Unit) {
+                poseDetectionViewModel.initPoseDetector(context)
+            }
             // This is the camera preview screen
-            PoseDetectionScreen(navController= navController,context=context)
+            if (permissionState.status.isGranted && LocalConfiguration.current.orientation == 2) {
+
+                PoseDetectionScreen(
+                    navController = navController,
+                    context = context,
+                    cameraInitialized = cameraInitialized,
+                    lifecycleOwner = lifecycleOwner,
+                    poseLandmarker = poseLandmarker,
+                    viewModel = poseDetectionViewModel
+                )
+            }
+            if (!cameraInitialized) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = UiColors.HomeSecondaryColor
+                    )
+                }
+            }
 
         }
     }
 }
 @SuppressLint("CoroutineCreationDuringComposition")
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PoseDetectionScreen(navController: NavController, context: Context) {
-    LaunchedEffect(Unit) {
-        (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+fun PoseDetectionScreen(navController: NavController,
+                        context: Context,
+                        cameraInitialized: Boolean,
+                        lifecycleOwner: LifecycleOwner,
+                        poseLandmarker: PoseLandmarker?,
+                        viewModel: PoseDetectionViewmodel) {
 
-    }
-    DisposableEffect(context) {
-        onDispose {
-            (context as MainActivity).requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        }
-    }
     val success by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
     val coroutineScope = rememberCoroutineScope()
-    val lifecycleOwner = LocalLifecycleOwner.current
+
 
     if(basicCountdownTimer(time = GlobalValues.time.toInt())==0 && basicCountdownTimer(10)==0) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -150,7 +212,11 @@ fun PoseDetectionScreen(navController: NavController, context: Context) {
                         .background(Color.Transparent),
                     contentAlignment = Alignment.Center
                 ) {
-                    PoseDetectionPreview( lifecycleOwner = lifecycleOwner, modifier = Modifier )
+                    PoseDetectionPreview( context = context,
+                        poseLandmarker = poseLandmarker,
+                        lifecycleOwner = lifecycleOwner,
+                        viewModel = viewModel,
+                        modifier = Modifier)
 
                 }
 //            Box(
@@ -184,20 +250,6 @@ fun AasanName(navController: NavController) {
     ) { asnName, timeData ->
         Log.d("Name", "Aasan Name: $asnName")
         Log.d("Time", "Time Data: $timeData")
-    }
-}
-
-
-@RequiresApi(Build.VERSION_CODES.O)
-@ExperimentalComposeUiApi
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    Final_projectTheme{
-        MyApp{
-            val context = LocalContext.current
-            Navigation(context)
-        }
     }
 }
 

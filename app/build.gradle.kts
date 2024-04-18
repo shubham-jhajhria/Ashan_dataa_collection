@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -9,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.shubham.final_project"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -97,5 +98,5 @@ dependencies {
 
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleversion")
 
-
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
 }

@@ -3,17 +3,11 @@ package com.shubham.final_project
 import android.os.Build
 import android.os.Environment
 import androidx.annotation.RequiresApi
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.github.doyaaaaaken.kotlincsv.dsl.csvWriter
 import java.io.File
-import java.time.LocalDateTime
-import java.util.Calendar
 
-class CsvViewModel : ViewModel() {
+class CsvViewModel() : ViewModel() {
     @RequiresApi(Build.VERSION_CODES.O)
     fun writeCsv(resultBundle: PoseDetector.ResultBundle) {
         val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
@@ -62,26 +56,4 @@ class CsvViewModel : ViewModel() {
         coordinatesList.add(GlobalValues.asanName)
         return coordinatesList
     }
-}
-//@RequiresApi(Build.VERSION_CODES.O)
-//@Composable
-//fun writeCsv(resultBundle: PoseDetector.ResultBundle){
-//    val folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)
-//    val csv=File(folder,"${GlobalValues.asanName}.csv")
-//    val fileExists = csv.exists()
-//    csv.createNewFile()
-//
-//    csvWriter().open(csv,append = true){
-//        if (!fileExists) {
-//            writeRow(getColumnHeadings())
-//        }
-//        writeRow(appendLandmarkCoordinates(resultBundle))
-//    }
-//}
-
-
-
-object GlobalValues {
-    var asanName: String by mutableStateOf("")
-    var time: String by mutableStateOf("")
 }
