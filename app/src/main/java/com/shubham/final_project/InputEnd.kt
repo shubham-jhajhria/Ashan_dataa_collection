@@ -64,7 +64,6 @@ fun InputEnd(
             modifier = Modifier
                 .padding(10.dp,60.dp)
                 .width(350.dp)
-//                .height(400.dp)
                 .clip(RoundedCornerShape(5))
                 .background(Color(0xFFFFFFFF))
 
@@ -76,9 +75,9 @@ fun InputEnd(
                     InputField(
                         modifier = Modifier.fillMaxWidth(),
                         valueState = asanNameState,
-                        labelId = "Enter Aasan Label",
+                        labelId = "Enter Yoga Label",
                         leadingIcon = Icons.Rounded.Create,
-                        leadingIconContentDescription = "Aasan Label",
+                        leadingIconContentDescription = "Yoga Label",
                         enabled = true,
                         isSingleLine = true,
                         onAction = KeyboardActions {
@@ -116,7 +115,6 @@ fun InputEnd(
                 }
                 else{
                     Box{
-
                     }
                 }
             }

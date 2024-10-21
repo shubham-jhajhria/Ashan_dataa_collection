@@ -78,12 +78,10 @@ class PoseDetectionViewmodel(
                 }
             } else {
                 // Handle the case where the LifecycleOwner is destroyed
-                // For example, you could log a warning or show a message to the user
                 Log.w("PoseDetectionViewModel", "LifecycleOwner is destroyed, cannot initialize camera")
             }
         }
     }
-
 
     private fun setupImageAnalyzer( poseLandmarker: PoseLandmarker ): ImageAnalysis {
         lateinit var executor: Executor
@@ -159,6 +157,4 @@ class PoseDetectionViewmodel(
             }
         }
     }
-
-
 }

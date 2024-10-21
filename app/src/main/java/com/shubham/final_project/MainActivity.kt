@@ -68,7 +68,6 @@ class MainActivity : ComponentActivity() {
             super.onCreate(savedInstanceState)
             setContent {
                 MyApp {
-
                     Navigation()
                 }
             }
@@ -140,7 +139,6 @@ fun Navigation() {
             }
             // This is the camera preview screen
             if (permissionState.status.isGranted && LocalConfiguration.current.orientation == 2) {
-
                 PoseDetectionScreen(
                     navController = navController,
                     context = context,
@@ -162,7 +160,6 @@ fun Navigation() {
                     )
                 }
             }
-
         }
     }
 }
@@ -177,7 +174,6 @@ fun PoseDetectionScreen(navController: NavController,
 
     val success by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.success))
     val coroutineScope = rememberCoroutineScope()
-
 
     if(basicCountdownTimer(time = GlobalValues.time.toInt())==0 && basicCountdownTimer(10)==0) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -200,7 +196,6 @@ fun PoseDetectionScreen(navController: NavController,
         Column(
             Modifier
         ) {
-
             Row(
                 Modifier
                     .fillMaxSize()
@@ -219,21 +214,10 @@ fun PoseDetectionScreen(navController: NavController,
                         modifier = Modifier)
 
                 }
-//            Box(
-//                Modifier
-//                    .fillMaxHeight()
-//                    .fillMaxWidth()
-//                    .background(Color.Black),
-//                contentAlignment = Alignment.Center,
-//            ) {
-//                Text(text = "Video")
-//            }
             }
         }
     }
 }
-
-
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable

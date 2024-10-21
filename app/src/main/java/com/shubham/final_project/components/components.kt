@@ -58,7 +58,7 @@ fun CreateHeader() {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Aasan Data Collection",
+                Text(text = "Yoga Data Collection",
                     style = TextStyle(color = Color(0xFF0A8ED9),
                         fontSize =24.sp,
                         fontWeight = FontWeight.SemiBold
@@ -69,6 +69,7 @@ fun CreateHeader() {
         }
     }
 }
+
 @Composable
 fun InputField(
     modifier: Modifier = Modifier,
@@ -102,6 +103,7 @@ fun InputField(
         keyboardActions = onAction
     )
 }
+
 @Composable
 fun Ann(){
     var animationActive by remember { mutableStateOf(true) }
